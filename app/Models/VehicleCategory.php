@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class VehicleCategory extends Model
+{
+    protected $fillable = ['name', 'slug', 'is_active'];
+
+    public function cars()
+    {
+        return $this->hasMany(Car::class, 'category_id');
+    }
+}
