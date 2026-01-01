@@ -4,10 +4,9 @@ import CustomerLayout from '@/layouts/auth/CustomerLayout.vue';
 import { statusClass } from '@/lib/utils';
 import type { Booking, BreadcrumbItem } from '@/types';
 
-defineProps<{ booking: Booking }>();
-const imageUrl =
-    'https://stimg.cardekho.com/images/carexteriorimages/630x420/Jaguar/F-Pace/10644/1755774688332/front-left-side-47.jpg?tr=w-664';
+const { booking } = defineProps<{ booking: Booking }>();
 
+const imageUrl = `/storage/${booking.image}`;
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Bookings',

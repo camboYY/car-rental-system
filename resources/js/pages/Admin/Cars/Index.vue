@@ -2,8 +2,10 @@
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Car, Category } from '@/types';
+import admin from '@/routes/admin';
+import { BreadcrumbItem, Car, Category } from '@/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
+import { watch } from 'vue';
 
 defineProps<{
     cars: {
@@ -19,11 +21,22 @@ const form = useForm({
     brand: '',
     model: '',
     plate_number: '',
-    price_per_day: '',
+    price_per_day: 0,
     image_url: '',
     description: '',
     category_id: '',
+    is_available: true,
+    price_weekly: 0,
+    price_monthly: 0,
+    price_daily: 0,
 });
+
+watch(
+    () => form.price_per_day,
+    () => {
+        form.price_daily = form.price_per_day;
+    },
+);
 
 const submit = () => {
     form.post('/admin/cars', {
@@ -55,14 +68,19 @@ const showImage = (id: number) => {
 const editCar = (id: number) => {
     router.get(`/admin/cars/${id}/edit`);
 };
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Car Management',
+        href: admin.cars.index().url,
+    },
+];
 </script>
 
 <template>
-    <AppLayout title="Cars">
+    <AppLayout title="Cars" :breadcrumbs="breadcrumbs">
         <Head title="Car Management" />
         <div class="p-6">
-            <h1 class="mb-4 text-xl font-bold">Car Management</h1>
-
             <!-- Create -->
             <form @submit.prevent="submit" class="mb-6 grid grid-cols-3 gap-3">
                 <div class="gap-1">
@@ -94,7 +112,8 @@ const editCar = (id: number) => {
                         v-model="form.price_per_day"
                         placeholder="Price / Day"
                         class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                    /><InputError :message="form.errors.price_per_day" />
+                    />
+                    <InputError :message="form.errors.price_per_day" />
                 </div>
                 <div class="gap-1">
                     <input
@@ -112,21 +131,69 @@ const editCar = (id: number) => {
                     />
                     <InputError :message="form.errors.description" />
                 </div>
-                <select
-                    v-model="form.category_id"
-                    class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">Select Category</option>
-                    <option
-                        v-for="cat in categories"
-                        :key="cat.id"
-                        :value="cat.id"
+                <div class="gap-1">
+                    <select
+                        v-model="form.category_id"
+                        class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
                     >
-                        {{ cat.name }}
-                    </option>
-                </select>
+                        <option value="">Select Category</option>
+                        <option
+                            v-for="cat in categories"
+                            :key="cat.id"
+                            :value="cat.id"
+                        >
+                            {{ cat.name }}
+                        </option>
+                    </select>
 
-                <Button class="w-1/3">Add Car</Button>
+                    <InputError :message="form.errors.category_id" />
+                </div>
+                <div class="flex items-center">
+                    <input
+                        type="checkbox"
+                        v-model="form.is_available"
+                        class="mr-2 rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <span class="text-sm">Available</span>
+                </div>
+                <div class="col-span-3">
+                    <div class="rounded bg-white p-6 shadow">
+                        <h2 class="mb-4 text-lg font-semibold">
+                            Rental Pricing
+                        </h2>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <input
+                                    v-model="form.price_daily"
+                                    type="number"
+                                    disabled
+                                    placeholder="Daily Price"
+                                    class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <input
+                                    v-model="form.price_weekly"
+                                    type="number"
+                                    placeholder="Weekly Price"
+                                    class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <input
+                                    v-model="form.price_monthly"
+                                    type="number"
+                                    placeholder="Monthly Price"
+                                    class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Button class="w-full">Add Car</Button>
             </form>
 
             <!-- Table -->

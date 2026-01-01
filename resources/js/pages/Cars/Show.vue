@@ -16,7 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 const altText = `${car.brand} ${car.model}`;
-const carImage = `https://stimg.cardekho.com/images/carexteriorimages/630x420/Jaguar/F-Pace/10644/1755774688332/front-left-side-47.jpg?tr=w-664`;
 </script>
 
 <template>
@@ -37,7 +36,7 @@ const carImage = `https://stimg.cardekho.com/images/carexteriorimages/630x420/Ja
                 >
                     <img
                         v-if="car.image_url"
-                        :src="carImage"
+                        :src="`/storage/${car.image_url}`"
                         :alt="altText"
                         class="h-full w-full rounded-lg object-cover"
                     />
@@ -56,12 +55,23 @@ const carImage = `https://stimg.cardekho.com/images/carexteriorimages/630x420/Ja
                     </p>
 
                     <p class="text-xl font-semibold">
-                        ${{ car.price_per_day }}
+                        ${{ car.price_weekly }}
+                        <span class="text-sm font-normal text-gray-500">
+                            / week
+                        </span>
+                    </p>
+                    <p class="text-xl font-semibold">
+                        ${{ car.price_monthly }}
+                        <span class="text-sm font-normal text-gray-500">
+                            / month
+                        </span>
+                    </p>
+                    <p class="text-xl font-semibold">
+                        ${{ car.price_daily }}
                         <span class="text-sm font-normal text-gray-500">
                             / day
                         </span>
                     </p>
-
                     <p
                         v-if="car.description"
                         class="leading-relaxed text-gray-700"

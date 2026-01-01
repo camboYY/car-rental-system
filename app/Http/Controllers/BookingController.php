@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Renderer\Image\PngImageBackEnd;
 use BaconQrCode\Writer;
 
 
@@ -42,8 +41,6 @@ class BookingController extends Controller
         ]);
 
         $car = Car::findOrFail($data['car_id']);
-        $days = Carbon::parse($data['start_date'])
-            ->diffInDays(Carbon::parse($data['end_date']));
 
         $booking = Booking::create([
             'user_id' => auth()->id(),
@@ -52,7 +49,7 @@ class BookingController extends Controller
             'status' => 'BOOKED',
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
-            'total_price' => $days * $car->price_per_day,
+            'total_price' => $this->calculateTotalPrice($car, $request),
             "payment_status" => "PENDING"
         ]);
 
@@ -171,4 +168,50 @@ class BookingController extends Controller
     }
 
     
+    private function calculateTotalPrice(Car $car, Request $request)
+    {
+        $totalDaysAndDuration = $this->calculateTotalDaysAndDuration($request->start_date, $request->end_date);
+
+        $duration = $totalDaysAndDuration['duration'];
+        $durationType = $totalDaysAndDuration['durationType'];
+        
+        switch ($durationType) {
+            case 'daily':
+                $total = $car->price_daily * $duration;
+                break;
+
+            case 'weekly':
+                $total = $car->price_weekly * $duration;
+                break;
+
+            case 'monthly':
+                $total = $car->price_monthly * $duration;
+                break;
+        }
+
+        return $total;
+    }
+
+    private function calculateTotalDaysAndDuration($start_date, $end_date)
+    {
+        $days = Carbon::parse($start_date)->diffInDays(Carbon::parse($end_date)) + 1;
+
+        if ($days >= 30) {
+            $durationType = 'monthly';
+            $duration = ceil($days / 30);
+
+        } elseif ($days >= 7) {
+            $durationType = 'weekly';
+            $duration = ceil($days / 7);
+
+        } else {
+            $durationType = 'daily';
+            $duration = $days;
+        } 
+
+        return [
+            'durationType' => $durationType,
+            'duration' => $duration,
+        ];
+    }
 }

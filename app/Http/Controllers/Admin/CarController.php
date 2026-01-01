@@ -35,7 +35,9 @@ class CarController extends Controller
             'image_url' => 'nullable|url',
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:vehicle_categories,id',
-
+            'price_daily' => 'required|numeric|min:1',
+            'price_weekly' => 'nullable|numeric|min:1',
+            'price_monthly' => 'nullable|numeric|min:1',
         ]);
 
         Car::create([
@@ -59,6 +61,9 @@ class CarController extends Controller
             'category_id' => 'nullable|exists:vehicle_categories,id',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'price_daily' => 'required|numeric|min:1',
+            'price_weekly' => 'nullable|numeric|min:1',
+            'price_monthly' => 'nullable|numeric|min:1',
         ]);
 
         if ($request->hasFile('images')) {

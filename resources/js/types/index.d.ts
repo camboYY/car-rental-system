@@ -15,6 +15,9 @@ export interface Car {
     is_available: boolean;
     category?: Category;
     images?: CarImage[];
+    price_daily?: number;
+    price_weekly?: number;
+    price_monthly?: number;
 }
 
 export interface CarImage {

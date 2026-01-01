@@ -38,7 +38,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const image_url = `https://stimg.cardekho.com/images/carexteriorimages/630x420/Jaguar/F-Pace/10644/1755774688332/front-left-side-47.jpg?tr=w-664`;
 const page = usePage();
 </script>
 
@@ -51,7 +50,7 @@ const page = usePage();
 
             <img
                 v-if="car.image_url"
-                :src="image_url"
+                :src="`/storage/${car.image_url}`"
                 :alt="car.brand + ' ' + car.model"
                 class="mb-4 h-64 w-full rounded-lg object-cover"
             />

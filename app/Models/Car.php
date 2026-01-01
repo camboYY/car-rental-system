@@ -13,7 +13,10 @@ class Car extends Model
         'is_available',
         "image_url",
         "description",
-        "category_id"
+        "category_id",
+        'price_daily',
+        'price_weekly',
+        'price_monthly',
     ];
 
     /**

@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import admin from '@/routes/admin';
 import { BreadcrumbItem, Car, Category } from '@/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
+import { watch } from 'vue';
 
 const props = defineProps<{
     car: Car;
@@ -18,7 +19,17 @@ const form = useForm({
     description: props.car.description,
     is_available: props.car.is_available,
     images: [] as File[],
+    price_weekly: props.car.price_weekly,
+    price_monthly: props.car.price_monthly,
+    price_daily: props.car.price_daily,
 });
+
+watch(
+    () => form.price_per_day,
+    () => {
+        form.price_daily = form.price_per_day;
+    },
+);
 
 const submit = () => {
     form.put(`/admin/cars/${props.car.id}`, {
@@ -59,8 +70,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     <AppLayout title="Edit Vehicle" :breadcrumbs="breadcrumbs">
         <Head title="Edit Vehicle" />
         <div class="mx-auto max-w-6xl p-6">
-            <h1 class="mb-6 text-2xl font-bold">Edit Vehicle</h1>
-
             <form @submit.prevent="submit" class="grid grid-cols-2 gap-6">
                 <!-- Left -->
                 <div class="space-y-4">
@@ -111,6 +120,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <label class="flex items-center gap-2">
                         <input
+                            name="is_available"
+                            :checked="form.is_available"
                             type="checkbox"
                             v-model="form.is_available"
                             class="checkbox px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
@@ -150,6 +161,40 @@ const breadcrumbs: BreadcrumbItem[] = [
                             >
                                 Delete
                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded bg-white p-6 shadow">
+                    <h2 class="mb-4 text-lg font-semibold">Rental Pricing</h2>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <input
+                                v-model="form.price_daily"
+                                type="number"
+                                placeholder="Daily Price"
+                                disabled
+                                class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div>
+                            <input
+                                v-model="form.price_weekly"
+                                type="number"
+                                placeholder="Weekly Price"
+                                class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <div>
+                            <input
+                                v-model="form.price_monthly"
+                                type="number"
+                                placeholder="Monthly Price"
+                                class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                            />
                         </div>
                     </div>
                 </div>

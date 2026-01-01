@@ -24,9 +24,6 @@ const breadcrumbs = [
         href: '/bookings',
     },
 ];
-
-const imageUrl =
-    'https://stimg.cardekho.com/images/carexteriorimages/630x420/Jaguar/F-Pace/10644/1755774688332/front-left-side-47.jpg?tr=w-664';
 </script>
 
 <template>
@@ -43,7 +40,11 @@ const imageUrl =
                         class="mx-0.5 flex w-full overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
                     >
                         <!-- Car Image -->
-                        <img :src="imageUrl" class="h-50 w-80 object-cover" />
+                        <img
+                            :src="`/storage/${booking.image}`"
+                            :alt="booking.carName"
+                            class="h-50 w-80 object-cover"
+                        />
 
                         <div class="justify-between p-4">
                             <div class="flex items-start justify-between">
