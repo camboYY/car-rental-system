@@ -39,9 +39,9 @@ export const customerMenu = [
         match: ['/payments'],
     },
     {
-        title: 'Profile',
+        title: 'profile',
         href: customer.profile.edit().url,
         icon: PersonStanding,
-        match: ['/profile'],
+        match: ['/customer/profile'],
     },
 ];

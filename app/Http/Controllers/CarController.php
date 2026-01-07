@@ -11,13 +11,25 @@ class CarController extends Controller
     public function index()
     {
         return Inertia::render('Cars/Index', [
-            'cars' => Car::where('is_available', true)->get()
+            'cars' => Car::with("category")->where('status', 'available')->paginate(10)
         ]);
     }
 
     public function show(Car $car)
     {
         return Inertia::render('Cars/Show', [
+            'car' => $car,
+            "category"=>$car->category
+        ]);
+    }
+
+    // Show booking creation form
+    public function booking(Car $car)
+    {
+        $carId = $car->id;
+        $car = Car::findOrFail($carId);
+
+        return Inertia::render('Cars/Booking', [
             'car' => $car
         ]);
     }

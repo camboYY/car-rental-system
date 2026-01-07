@@ -6,7 +6,7 @@ import * as bookingRoute from '@/routes/bookings';
 import { MyBooking } from '@/types';
 import { Link } from '@inertiajs/vue3';
 
-defineProps<{
+const { bookings } = defineProps<{
     bookings: MyBooking[];
 }>();
 
@@ -61,6 +61,10 @@ const breadcrumbs = [
                                     <p class="text-sm text-muted-foreground">
                                         💵 Payment Status:
                                         {{ booking.paymentStatus }}
+                                    </p>
+
+                                    <p class="text-sm text-muted-foreground">
+                                        Price Type: {{ booking.priceType }}
                                     </p>
                                 </div>
                                 <div>

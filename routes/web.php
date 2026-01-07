@@ -60,9 +60,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
     Route::get('/cars/{car}', action: [CarController::class, 'show'])->name('cars.show');
+    Route::get('/cars/{car}/booking', [CarController::class, 'booking'])->name('cars.booking');
 
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store')   ;
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])
         ->name('my-bookings');

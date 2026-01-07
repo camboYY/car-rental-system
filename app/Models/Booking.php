@@ -16,7 +16,8 @@ class Booking extends Model
         'payment_status', // optional, e.g., 'PENDING', 'PAID'
         'payment_method',
         'paid_at',
-        'invoice_number'
+        'invoice_number',
+        'price_type',
     ];
 
     protected $casts = [

@@ -33,6 +33,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <p>Pickup Location: {{ booking.pickupLocation }}</p>
                     <p>Start Date: {{ booking.startDate }}</p>
                     <p>End Date: {{ booking.endDate }}</p>
+                    <p>Price Type: {{ booking.priceType }}</p>
                     <p>Total Price: ${{ booking.total }}</p>
 
                     <span

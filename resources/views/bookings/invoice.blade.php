@@ -118,8 +118,8 @@
     <!-- Totals -->
     <table class="totals">
         <tr>
-            <td>Price per day:</td>
-            <td>${{ $booking['price_per_day'] }}</td>
+            <td>Price Type:</td>
+            <td>{{ $booking['price_type'] }}</td>
         </tr>
         <tr>
             <td>Number of days:</td>

@@ -17,7 +17,7 @@ const form = useForm({
     price_per_day: props.car.price_per_day,
     category_id: props.car.category?.id,
     description: props.car.description,
-    is_available: props.car.is_available,
+    status: props.car.status,
     images: [] as File[],
     price_weekly: props.car.price_weekly,
     price_monthly: props.car.price_monthly,
@@ -118,16 +118,18 @@ const breadcrumbs: BreadcrumbItem[] = [
                         placeholder="Description"
                     />
 
-                    <label class="flex items-center gap-2">
-                        <input
-                            name="is_available"
-                            :checked="form.is_available"
-                            type="checkbox"
-                            v-model="form.is_available"
-                            class="checkbox px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                        />
-                        Available
-                    </label>
+                    <div class="gap-2">
+                        <select
+                            name="status"
+                            placeholder="Status"
+                            v-model="form.status"
+                            class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                            <option value="available">Available</option>
+                            <option value="rented">Rented</option>
+                            <option value="mantenance">Mantenance</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Right -->

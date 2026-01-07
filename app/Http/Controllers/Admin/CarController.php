@@ -38,11 +38,11 @@ class CarController extends Controller
             'price_daily' => 'required|numeric|min:1',
             'price_weekly' => 'nullable|numeric|min:1',
             'price_monthly' => 'nullable|numeric|min:1',
+            'status' => 'required|in:available,maintenance,rented',
         ]);
 
         Car::create([
-            ...$request->all(),
-            'is_available' => true,
+            ...$request->all()
         ]);
 
         return back()->with('success', 'Car added successfully');
@@ -55,7 +55,7 @@ class CarController extends Controller
             'model' => 'required',
             'plate_number' => 'required|unique:cars,plate_number,' . $car->id,
             'price_per_day' => 'required|numeric|min:0',
-            'is_available' => 'boolean',
+            'status' => 'required|in:available,maintenance,rented',
             'image_url' => 'nullable|url',
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:vehicle_categories,id',
@@ -82,10 +82,11 @@ class CarController extends Controller
         return back()->with('success', 'Car updated');
     }
 
-    public function toggle(Car $car)
+    public function toggle(Request $request, Car $car)
     {
+        $car = Car::findOrFail($car->id);
         $car->update([
-            'is_available' => ! $car->is_available,
+            'status' => $request->status,
         ]);
 
         return back()->with('success', 'Availability updated');

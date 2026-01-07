@@ -12,12 +12,25 @@ export interface Car {
     price_per_day: number;
     description?: string;
     image_url?: string;
+    status: 'available' | 'maintenance' | 'rented';
     is_available: boolean;
     category?: Category;
     images?: CarImage[];
-    price_daily?: number;
-    price_weekly?: number;
-    price_monthly?: number;
+    price_daily: number;
+    price_weekly: number;
+    price_monthly: number;
+    category: Category;
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface Paginated<T> {
+    data: T[];
+    links: PaginationLink[];
 }
 
 export interface CarImage {
@@ -105,6 +118,7 @@ export type Booking = {
     image?: string;
     pickupLocation?: string;
     status: BookingStatus;
+    priceType: 'daily' | 'weekly' | 'monthly';
 };
 
 export type MyBooking = {
@@ -119,6 +133,7 @@ export type MyBooking = {
     pickupLocation: string;
     paymentStatus?: PaymentStatus;
     invoice_url?: string;
+    priceType: 'daily' | 'weekly' | 'monthly';
 };
 
 export type Review = {

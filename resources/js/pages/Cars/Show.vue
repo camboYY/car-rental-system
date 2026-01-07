@@ -20,58 +20,97 @@ const altText = `${car.brand} ${car.model}`;
 
 <template>
     <CustomerLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto max-w-5xl p-6">
-            <!-- Back -->
+        <div class="mx-auto max-w-6xl px-4 py-8">
+            <!-- Back link -->
             <Link
                 :href="cars.index().url"
-                class="mb-6 inline-block text-sm text-blue-600 hover:underline"
+                class="mb-6 inline-flex items-center text-sm text-blue-600 hover:underline"
             >
                 ← Back to cars
             </Link>
 
-            <div class="grid gap-8 md:grid-cols-2">
-                <!-- Car Image -->
+            <div class="grid gap-10 lg:grid-cols-2">
+                <!-- Image Card -->
                 <div
-                    class="flex h-80 items-center justify-center rounded-lg bg-gray-100"
+                    class="relative overflow-hidden rounded-2xl bg-gray-100 shadow"
                 >
                     <img
                         v-if="car.image_url"
                         :src="`/storage/${car.image_url}`"
                         :alt="altText"
-                        class="h-full w-full rounded-lg object-cover"
+                        class="h-[420px] w-full object-cover"
                     />
-                    <span v-else class="text-gray-400">No image</span>
+                    <div
+                        v-else
+                        class="flex h-[420px] items-center justify-center text-gray-400"
+                    >
+                        No image available
+                    </div>
+
+                    <!-- Status badge -->
+                    <span
+                        class="absolute top-4 right-4 rounded-full px-4 py-1 text-sm font-semibold shadow"
+                        :class="
+                            car.status === 'available'
+                                ? 'bg-green-600 text-white'
+                                : 'bg-red-600 text-white'
+                        "
+                    >
+                        {{
+                            car.status === 'available'
+                                ? 'Available'
+                                : 'Unavailable'
+                        }}
+                    </span>
                 </div>
 
-                <!-- Car Info -->
-                <div class="space-y-4">
-                    <h1 class="text-3xl font-bold">
-                        {{ car.brand }} {{ car.model }}
-                    </h1>
+                <!-- Info -->
+                <div class="flex flex-col justify-between space-y-6">
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tight">
+                            {{ car.brand }} {{ car.model }}
+                        </h1>
 
-                    <p class="text-gray-600">
-                        Plate number:
-                        <span class="font-medium">{{ car.plate_number }}</span>
-                    </p>
+                        <p class="mt-2 text-gray-500">
+                            Plate number:
+                            <span class="font-medium text-gray-800">
+                                {{ car.plate_number }}
+                            </span>
+                        </p>
 
-                    <p class="text-xl font-semibold">
-                        ${{ car.price_weekly }}
-                        <span class="text-sm font-normal text-gray-500">
-                            / week
-                        </span>
-                    </p>
-                    <p class="text-xl font-semibold">
-                        ${{ car.price_monthly }}
-                        <span class="text-sm font-normal text-gray-500">
-                            / month
-                        </span>
-                    </p>
-                    <p class="text-xl font-semibold">
-                        ${{ car.price_daily }}
-                        <span class="text-sm font-normal text-gray-500">
-                            / day
-                        </span>
-                    </p>
+                        <p class="mt-1 text-gray-500">
+                            Category:
+                            <span class="font-medium text-gray-800">
+                                {{ car.category?.name ?? '—' }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Pricing -->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div class="rounded-xl border p-4 text-center">
+                            <p class="text-sm text-gray-500">Daily</p>
+                            <p class="text-2xl font-semibold">
+                                ${{ car.price_daily }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border p-4 text-center">
+                            <p class="text-sm text-gray-500">Weekly</p>
+                            <p class="text-2xl font-semibold">
+                                ${{ car.price_weekly }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border p-4 text-center">
+                            <p class="text-sm text-gray-500">Monthly</p>
+                            <p class="text-2xl font-semibold">
+                                ${{ car.price_monthly }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
                     <p
                         v-if="car.description"
                         class="leading-relaxed text-gray-700"
@@ -79,35 +118,19 @@ const altText = `${car.brand} ${car.model}`;
                         {{ car.description }}
                     </p>
 
-                    <!-- Status -->
-                    <div>
-                        <span
-                            class="inline-flex rounded-full px-3 py-1 text-sm font-medium"
-                            :class="
-                                car.is_available
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-red-100 text-red-700'
-                            "
-                        >
-                            {{
-                                car.is_available ? 'Available' : 'Not Available'
-                            }}
-                        </span>
-                    </div>
-
                     <!-- Actions -->
-                    <div class="flex gap-4 pt-4">
+                    <div class="flex flex-wrap gap-4 pt-4">
                         <Link
-                            v-if="car.is_available"
-                            :href="`/bookings/create?car=${car.id}`"
-                            class="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+                            v-if="car.status === 'available'"
+                            :href="cars.booking(car.id).url"
+                            class="rounded-xl bg-blue-600 px-8 py-3 text-white transition hover:bg-blue-700"
                         >
                             Book Now
                         </Link>
 
                         <Link
                             :href="cars.index().url"
-                            class="rounded border px-6 py-2 text-gray-700 hover:bg-gray-100"
+                            class="rounded-xl border px-8 py-3 text-gray-700 hover:bg-gray-100"
                         >
                             Back
                         </Link>

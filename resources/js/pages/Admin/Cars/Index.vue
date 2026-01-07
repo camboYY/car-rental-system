@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import admin from '@/routes/admin';
 import { BreadcrumbItem, Car, Category } from '@/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 
 defineProps<{
     cars: {
@@ -17,6 +17,8 @@ defineProps<{
     categories: Category[];
 }>();
 
+const status = ref('');
+
 const form = useForm({
     brand: '',
     model: '',
@@ -25,7 +27,7 @@ const form = useForm({
     image_url: '',
     description: '',
     category_id: '',
-    is_available: true,
+    status: '',
     price_weekly: 0,
     price_monthly: 0,
     price_daily: 0,
@@ -45,7 +47,10 @@ const submit = () => {
 };
 
 const toggleAvailability = (id: number) => {
-    router.patch(`/admin/cars/${id}/toggle`);
+    router.patch(`/admin/cars/${id}/toggle`, {
+        status: form.status,
+        preserveScroll: true,
+    });
 };
 
 const deleteCar = (id: number) => {
@@ -148,13 +153,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <InputError :message="form.errors.category_id" />
                 </div>
-                <div class="flex items-center">
-                    <input
-                        type="checkbox"
-                        v-model="form.is_available"
-                        class="mr-2 rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                    <span class="text-sm">Available</span>
+                <div class="gap-1">
+                    <select
+                        name="status"
+                        placeholder="Status"
+                        v-model="form.status"
+                        class="w-full rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                        <option value="">Select Status</option>
+                        <option value="available">Available</option>
+                        <option value="rented">Rented</option>
+                        <option value="mantenance">Mantenance</option>
+                    </select>
+                    <InputError :message="form.errors.status" />
                 </div>
                 <div class="col-span-3">
                     <div class="rounded bg-white p-6 shadow">
@@ -219,13 +230,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <td class="text-center">
                             <span
                                 :class="
-                                    car.is_available
+                                    car.status === 'available'
                                         ? 'text-green-600'
                                         : 'text-red-600'
                                 "
                             >
                                 {{
-                                    car.is_available
+                                    car.status === 'available'
                                         ? 'Available'
                                         : 'Unavailable'
                                 }}
@@ -233,12 +244,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </td>
                         <td>{{ car?.category?.name }}</td>
                         <td class="space-x-2 text-center">
-                            <button
-                                @click="toggleAvailability(car.id)"
-                                class="text-blue-600"
+                            <select
+                                v-model="form.status"
+                                class="w-1/3 rounded border px-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                v-on:change="toggleAvailability(car.id)"
                             >
-                                Toggle
-                            </button>
+                                <option value="">Select Status</option>
+                                <option value="available">Available</option>
+                                <option value="rented">Rented</option>
+                                <option value="mantenance">Mantenance</option>
+                            </select>
                             <button
                                 @click="deleteCar(car.id)"
                                 class="text-red-600"

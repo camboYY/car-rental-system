@@ -10,7 +10,7 @@ class Car extends Model
         'model',
         'plate_number',
         'price_per_day',
-        'is_available',
+        'status',
         "image_url",
         "description",
         "category_id",

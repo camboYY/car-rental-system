@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Car;
+use App\Traits\CalculatesRentalPrice;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,16 +20,8 @@ class BookingController extends Controller
 
      private $image_url = "https://stimg.cardekho.com/images/carexteriorimages/630x420/Jaguar/F-Pace/10644/1755774688332/front-left-side-47.jpg?tr=w-664";
 
-    // Show booking creation form
-    public function create(Request $request)
-    {
-        $carId = $request->query('car');
-        $car = Car::findOrFail($carId);
+     use CalculatesRentalPrice;
 
-        return Inertia::render('Bookings/Create', [
-            'car' => $car
-        ]);
-    }
 
     public function store(Request $request)
     {
@@ -38,9 +31,18 @@ class BookingController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'pickup_location' => 'required|string|max:255',
+            'price_type' => 'required|in:daily,weekly,monthly',
         ]);
 
+
         $car = Car::findOrFail($data['car_id']);
+
+        $rental = $this->calculateRental(
+            $car,
+            $request->start_date,
+            $request->end_date,
+            $request->price_type
+        );
 
         $booking = Booking::create([
             'user_id' => auth()->id(),
@@ -49,11 +51,12 @@ class BookingController extends Controller
             'status' => 'BOOKED',
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
-            'total_price' => $this->calculateTotalPrice($car, $request),
-            "payment_status" => "PENDING"
+            'total_price' => $rental['total_price'],
+            "payment_status" => "PENDING",
+            "price_type" => $data['price_type'], 
         ]);
 
-        $car->update(['is_available' => false]);
+        $car->update(['status' => "rented"]);
 
         return redirect()->route('bookings.show', $booking->id)->with('success', 'Car booked successfully!');
     }
@@ -78,6 +81,7 @@ class BookingController extends Controller
                 'status' => $booking->status,
                 'paymentStatus' => $booking->payment_status ?? 'Pending',
                 'invoiceUrl' => route('bookings.invoice', $booking->id),
+                'priceType' => $booking->price_type
             ],
         ]);
     }
@@ -105,6 +109,7 @@ class BookingController extends Controller
                             ? 'ONGOING'
                             : 'RETURNED'),
                     'paymentStatus' => $booking->payment_status,
+                    'priceType' => $booking->price_type,
                     'invoice_url' => route('bookings.invoice', $booking->id),
                 ];
             });
@@ -143,11 +148,11 @@ class BookingController extends Controller
                 'total_price' => $booking->total_price,
                 'payment_status' => $booking->payment_status,
                 'total_days' => Carbon::parse($booking->start_date)->diffInDays(Carbon::parse($booking->end_date)),
-                'price_per_day' => $booking->car->price_per_day,
                 "payment_method" => "Cash on Pickup",
                 "status" => $booking->status,
                 "paid_at" => $booking->paid_at,
-                "invoice_number" => $booking->invoice_number
+                "invoice_number" => $booking->invoice_number,
+                "price_type" => $booking->price_type
             ];
 
         $pdf = \PDF::loadView('bookings.invoice', [
