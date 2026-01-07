@@ -3,16 +3,16 @@
         <div class="p-6">
             <!-- Page Header -->
             <div class="mb-6 flex items-center justify-between">
-                <h1 class="text-2xl font-bold">Car Returns</h1>
+                <h1 class="text-2xl font-bold">Car Ongoing Rentals</h1>
 
                 <span class="text-sm text-gray-500">
-                    {{ bookings.length }} returned
+                    {{ bookings.data.length }} ongoing rental(s)
                 </span>
             </div>
 
             <!-- Empty State -->
             <div
-                v-if="bookings.length === 0"
+                v-if="bookings.data.length === 0"
                 class="rounded border border-dashed p-8 text-center text-gray-500"
             >
                 No cars currently out for rental.
@@ -63,22 +63,22 @@
 
                     <tbody>
                         <tr
-                            v-for="booking in bookings"
+                            v-for="booking in bookings.data"
                             :key="booking.id"
                             class="border-t hover:bg-gray-50"
                         >
                             <td class="px-4 py-3">
                                 <div class="font-medium">
-                                    {{ booking.customer }}
+                                    {{ booking.user.name }}
                                 </div>
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ booking.car }}
+                                {{ booking.car.brand }} {{ booking.car.model }}
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ booking.plate }}
+                                {{ booking.car.plate_number }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -86,7 +86,7 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ booking.end_date }}
+                                {{ formatDate(booking.end_date) }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -103,15 +103,35 @@
                             </td>
 
                             <td class="px-4 py-3 text-right">
-                                <span
-                                    class="inline-block rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700"
+                                <button
+                                    @click="confirmReturn(booking.id)"
+                                    class="rounded bg-blue-600 px-4 py-1.5 text-sm text-white hover:bg-blue-700"
                                 >
-                                    Returned
-                                </span>
+                                    Mark Returned
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <!--- Pagination -->
+                <div
+                    class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+                >
+                    <div class="flex flex-1 justify-between sm:hidden">
+                        <a
+                            href="#"
+                            class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        >
+                            Previous
+                        </a>
+                        <a
+                            href="#"
+                            class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        >
+                            Next
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </AppLayout>
@@ -119,20 +139,13 @@
 
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import { formatDate } from '@/lib/utils';
 import admin from '@/routes/admin';
-import { BreadcrumbItem } from '@/types';
+import { Booking, BreadcrumbItem, Paginated } from '@/types';
 import { router } from '@inertiajs/vue3';
 
 defineProps<{
-    bookings: {
-        id: number;
-        customer: string;
-        car: string;
-        plate: string;
-        pickup_location: string;
-        end_date: string;
-        payment_status: string;
-    }[];
+    bookings: Paginated<Booking>;
 }>();
 
 const confirmReturn = (id: number) => {
@@ -149,8 +162,8 @@ const confirmReturn = (id: number) => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Car Returns',
-        href: admin.bookings.returns().url,
+        title: 'Car Ongoing Rentals',
+        href: admin.bookings.ongoing().url,
     },
 ];
 </script>

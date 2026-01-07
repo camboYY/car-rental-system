@@ -32,6 +32,12 @@
                         {{ todayReturns }}
                     </p>
                 </div>
+                <div class="rounded border bg-white p-6 shadow-sm">
+                    <p class="text-sm text-gray-500">Today Bookings</p>
+                    <p class="mt-2 text-4xl font-bold text-gray-600">
+                        {{ todayBookings }}
+                    </p>
+                </div>
             </div>
         </div>
     </AppLayout>
@@ -53,5 +59,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 defineProps<{
     todayPickups: number;
     todayReturns: number;
+    todayBookings: number;
 }>();
 </script>

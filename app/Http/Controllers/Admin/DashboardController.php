@@ -14,12 +14,17 @@ class DashboardController extends Controller
         return Inertia::render('Admin/Dashboard', [
             'todayPickups' => Booking::with('car', 'user')
                 ->whereDate('start_date', $today)
-                ->where('status', 'BOOKED')
+                ->where('status', 'ONGOING')
                 ->count(),
 
             'todayReturns' => Booking::with('car', 'user')
                 ->whereDate('end_date', $today)
-                ->where('status', 'ONGOING')
+                ->where('status', 'RETURNED')
+                ->count(),
+
+            'todayBookings' => Booking::with('car', 'user')
+                ->where('status', 'BOOKED')
+                ->whereDate('start_date', $today)
                 ->count(),
         ]);
     }

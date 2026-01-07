@@ -24,6 +24,8 @@ const breadcrumbs = [
         href: '/bookings',
     },
 ];
+
+console.log({ bookings });
 </script>
 
 <template>

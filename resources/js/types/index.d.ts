@@ -110,6 +110,7 @@ export type Booking = {
     id: number;
     invoiceUrl?: string;
     paymentStatus: PaymentStatus;
+    payment_status: PaymentStatus;
     carName: string;
     startDate: string;
     endDate: string;
@@ -117,8 +118,13 @@ export type Booking = {
     plate?: string;
     image?: string;
     pickupLocation?: string;
+    pickup_location?: string;
     status: BookingStatus;
     priceType: 'daily' | 'weekly' | 'monthly';
+    car: Car;
+    user: User;
+    end_date: string;
+    start_date: string;
 };
 
 export type MyBooking = {

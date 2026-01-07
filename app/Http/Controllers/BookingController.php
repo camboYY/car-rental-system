@@ -103,11 +103,7 @@ class BookingController extends Controller
                     'endDate' => $booking->end_date->format('d M Y'),
                     'total' => $booking->total_price,
                     'pickupLocation' => $booking->pickup_location ?? 'Phnom Penh Airport',
-                    'status' => now()->lt($booking->start_date)
-                        ? 'BOOKED'
-                        : (now()->between($booking->start_date, $booking->end_date)
-                            ? 'ONGOING'
-                            : 'RETURNED'),
+                    'status' => $booking->status,
                     'paymentStatus' => $booking->payment_status,
                     'priceType' => $booking->price_type,
                     'invoice_url' => route('bookings.invoice', $booking->id),

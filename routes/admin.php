@@ -17,6 +17,8 @@ Route::middleware(['auth', 'can:manage-bookings'])->prefix('admin')->group(funct
 
     Route::get('/bookings/returns', [BookingController::class, 'returns'])
     ->name('admin.bookings.returns');
+    Route::get('/bookings/ongoing', [BookingController::class, 'ongoing'])
+        ->name('admin.bookings.ongoing');
 
     Route::post('/bookings/{booking}/return', [BookingController::class, 'confirmReturn'])
         ->name('admin.bookings.return');

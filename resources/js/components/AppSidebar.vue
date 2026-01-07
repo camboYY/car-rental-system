@@ -28,7 +28,7 @@ import AppLogo from './AppLogo.vue';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: admin.dashboard(),
+        href: admin.dashboard().url,
         icon: LayoutGrid,
     },
     {
@@ -45,6 +45,21 @@ const mainNavItems: NavItem[] = [
         title: 'Users',
         href: users.index().url,
         icon: User,
+    },
+    {
+        title: 'Return Cars',
+        href: admin.bookings.returns().url,
+        icon: Bus,
+    },
+    {
+        title: 'Pickup Cars',
+        href: admin.bookings.pickups().url,
+        icon: Bus,
+    },
+    {
+        title: 'Ongoing Rentals',
+        href: admin.bookings.ongoing().url,
+        icon: Bus,
     },
 ];
 

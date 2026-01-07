@@ -13,12 +13,24 @@ use Inertia\Inertia;
 
 class BookingController extends Controller
 {
+
+    public function ongoing()
+    {
+        $bookings = Booking::with('car', 'user')
+            ->where('status', 'ONGOING')
+            ->orderBy('end_date')
+            ->paginate(10);
+
+        return Inertia::render('Admin/Bookings/Ongoing', [
+            'bookings' => $bookings,
+        ]);
+    }
     public function pickups()
     {
         $bookings = Booking::with('car', 'user')
             ->where('status', 'BOOKED')
             ->orderBy('start_date')
-            ->get();
+            ->paginate(10);
 
         return Inertia::render('Admin/Bookings/Pickups', [
             'bookings' => $bookings,
@@ -40,7 +52,7 @@ class BookingController extends Controller
     public function returns()
     {
         $bookings = Booking::with('car', 'user')
-            ->where('status', 'ONGOING')
+            ->where('status', 'RETURNED')
             ->orderBy('end_date')
             ->get()
             ->map(fn ($b) => [
@@ -53,7 +65,7 @@ class BookingController extends Controller
                 'payment_status' => $b->payment_status,
             ]);
 
-        return Inertia::render('Admin/Bookings/Returns', [
+        return Inertia::render('Admin/Bookings/Return', [
             'bookings' => $bookings
         ]);
     }

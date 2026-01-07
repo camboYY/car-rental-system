@@ -6,6 +6,14 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export const formatDate = (date: string) => {
+    return new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    }).format(new Date(date));
+};
+
 export function urlIsActive(
     urlToCheck: NonNullable<InertiaLinkProps['href']>,
     currentUrl: string,
